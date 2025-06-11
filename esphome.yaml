@@ -1,0 +1,125 @@
+esphome:
+  name: smart-gen-controller
+  friendly_name: Smart Gen Controller 
+
+esp32:
+  board: seeed_xiao_esp32c3
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "XXXXXXXXXX"
+
+ota:
+  - platform: esphome
+    password: "xxxxxxxxxxxxxxxxxxxxxx"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Smart-Gen-Controller"
+    password: "XXXXXXXX"
+
+captive_portal:
+
+switch:
+  - platform: gpio
+    pin: GPIO9
+    name: Start Relay 
+    id: relay1
+  - platform: gpio
+    pin: GPIO10
+    name: Ignition Relay
+    id: relay2
+    inverted: True
+  - platform: template
+    name: "Genrator"
+    icon: "mdi:generator-stationary"
+    id: gen_swi
+    optimistic: true
+    turn_on_action:
+      - light.turn_on: 
+          id: but_led
+          brightness: 100%
+          effect: fast pulse
+      - switch.turn_on: relay1
+      - delay: 2s
+      - switch.turn_on: relay2
+      - delay: 5s
+      - switch.turn_off: relay2
+      - light.turn_on:
+          id : but_led
+          effect: none
+
+    turn_off_action: 
+      then:
+        - light.turn_on:
+            id: but_led
+            effect: fast pulse
+        - switch.turn_off: relay1
+        - delay: 2s
+        - light.turn_off: but_led 
+                 
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO7
+      mode: INPUT_PULLUP
+      inverted: true      
+    name: "Manual Switch"
+    on_press:
+      then:
+        - switch.toggle: gen_swi 
+      
+output:
+  - platform: ledc
+    pin: GPIO6
+    id: gpio_
+    inverted: True
+
+
+light:
+  - platform: monochromatic
+    output: gpio_
+    name: "Button Light"
+    id: but_led
+    effects: 
+      - pulse:
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 0.5s
+          update_interval: 0.5s
+          min_brightness: 0%
+          max_brightness: 100%
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal Sensor"
+    update_interval: 60s   
+  - platform: ct_clamp
+    sensor: adc_sensor
+    name: "ZMBT101B"
+    update_interval: 10s
+    filters: 
+       - calibrate_linear:
+         - 0 -> 0
+         - 0.270 -> 220
+    
+
+
+  - platform: adc
+    pin: GPIO2
+    id: adc_sensor
+    attenuation: 12db
+
+  - platform: wifi_signal
+    name: "WiFi Signal Sensor"
+    update_interval: 60s   
