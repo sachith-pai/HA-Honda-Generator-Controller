@@ -9,6 +9,11 @@ Smart Genrator Controller for Honda EU70is using ESPHOME
 5. Project Box
 6. Nylon Hex Standoff & Screws
 
+## Circuit Diagram 
+<div align="center">
+  <img src="CircuitDiagram.png" width="400" height="300"/>
+</div>
+
  
 ## Features:
 - Affordable 
