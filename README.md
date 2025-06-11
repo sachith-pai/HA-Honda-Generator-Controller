@@ -1,5 +1,6 @@
 # Smart-Honda-Generator-Controller
-A ESPHome based Smart Generator Controller for Honda EU70is
+An ESPHome-based Smart Generator Controller for Honda EU70is
+⚠️ DO THIS AT YOUR OWN RISK.⚠️
 
 ## Parts Used 
 1. [Seeed Studio XIAO ESP32C3](https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html?srsltid=AfmBOooIodbglI-FhdQnmXx7LXcKbdsWosjVKZYqDZ0iIiYKpF8yulmC) 
